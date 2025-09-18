@@ -36,7 +36,7 @@ const KpiCards = ({ kpis }: { kpis: ApiResponse }) => {
                 <TrendingUp className="fill-success stroke-success" />
               </span>
               <div className="text-xs">
-                <span className="text-muted">
+                <span className="text-[#737373]">
                   <span className="text-success">12%</span> from last month
                 </span>
               </div>
@@ -52,7 +52,7 @@ const KpiCards = ({ kpis }: { kpis: ApiResponse }) => {
                 <TrendingUp className="fill-success stroke-success" />
               </span>
               <div className="text-xs">
-                <span className="text-muted">
+                <span className="text-[#737373]">
                   <span className="text-success">12%</span> from last month
                 </span>
               </div>
@@ -68,7 +68,7 @@ const KpiCards = ({ kpis }: { kpis: ApiResponse }) => {
                 <TrendingUp className="fill-success stroke-success" />
               </span>
               <div className="text-xs">
-                <span className="text-muted">
+                <span className="text-[#737373]">
                   <span className="text-success">12%</span> from last month
                 </span>
               </div>
@@ -84,7 +84,7 @@ const KpiCards = ({ kpis }: { kpis: ApiResponse }) => {
                 <TrendingUp className="fill-success stroke-success" />
               </span>
               <div className="text-xs">
-                <span className="text-muted">
+                <span className="text-[#737373]">
                   <span className="text-success">12%</span> from last month
                 </span>
               </div>
@@ -100,7 +100,7 @@ const KpiCards = ({ kpis }: { kpis: ApiResponse }) => {
                 <TrendingUp className="fill-success stroke-success" />
               </span>
               <div className="text-xs">
-                <span className="text-muted">
+                <span className="text-[#737373]">
                   <span className="text-success">12%</span> from last month
                 </span>
               </div>

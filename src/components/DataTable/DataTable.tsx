@@ -2,11 +2,10 @@
 
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ApiResponse } from "../../types/api";
 import {
-    CalendarFold,
+  CalendarFold,
   ChevronsDown,
   ChevronsUp,
   CircleMinus,
@@ -15,6 +14,7 @@ import {
   Search,
 } from "lucide-react";
 import { useState } from "react";
+import Modal from "../common/Modal/Modal";
 
 // Register AG Grid modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -100,7 +100,7 @@ const DataTable = ({ kpis }: DataTableProps) => {
     <section className="mb-10">
       <div className="flex items-center gap-6 mb-4">
         <div className="shrink-0">
-          <span className="text-muted text-xs font-medium mb-1 block">
+          <span className="text-[#737373] text-xs font-medium mb-1 block">
             Explore by Products
           </span>
           <h2 className="text-lg font-medium">
@@ -124,10 +124,11 @@ const DataTable = ({ kpis }: DataTableProps) => {
             />
           </div>
           <div className="custom-btn flex items-center gap-1.5">
-            <span>
-              <MapPin size={14} />
-            </span>
-            <span className="font-medium text-sm">Location</span>
+            <Modal
+              buttonIcon={<MapPin size={14} />}
+              title="Shadcn modal"
+              buttonValue="Location"
+            />
           </div>
           <div className="custom-btn flex items-center gap-1.5">
             <span>
@@ -145,10 +146,7 @@ const DataTable = ({ kpis }: DataTableProps) => {
           </div>
         </div>
       </div>
-      <div
-        className="card p-4 ag-theme-alpine"
-        style={{ height: "auto", width: "100%" }}
-      >
+      <div className="card p-4" style={{ height: "auto", width: "100%" }}>
         <AgGridReact
           columnDefs={columnDefs}
           rowData={rowData}

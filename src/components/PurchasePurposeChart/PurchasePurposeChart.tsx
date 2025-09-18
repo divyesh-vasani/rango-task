@@ -98,7 +98,7 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
         <div className="flex flex-col grow">
           <div className="flex items-center gap-6 mb-4">
             <div className="shrink-0">
-              <span className="text-muted text-xs font-medium mb-1 block">
+              <span className="text-[#737373] text-xs font-medium mb-1 block">
                 Purchase Purpose Trends
               </span>
               <h2 className="text-lg font-medium">₹90,092,090</h2>
