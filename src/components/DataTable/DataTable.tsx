@@ -1,6 +1,6 @@
 "use client";
-
 import { AgGridReact } from "ag-grid-react";
+import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ApiResponse } from "../../types/api";
@@ -23,72 +23,87 @@ interface DataTableProps {
   kpis: ApiResponse;
 }
 
+interface ProductRow {
+  title: string;
+  thumbnail: string;
+  stock: number;
+  sentiment?: string;
+  issue?: string;
+  description: string;
+}
+
+
 const DataTable = ({ kpis }: DataTableProps) => {
   const [quickFilterText, setQuickFilterText] = useState("");
 
-  const columnDefs = [
-    {
-      headerName: "Product",
-      field: "title",
-      flex: 2,
-      cellRenderer: (params: any) => {
-        return (
-          <div className="flex items-center gap-3">
-            <div className="max-w-9 max-h-9 overflow-hidden p-1 rounded-md bg-[#ececec]">
-              <img src={params.data.thumbnail} alt={params.data.title} />
-            </div>
-            <span className="font-medium text-sm">{params.data.title}</span>
+  const columnDefs: ColDef<ProductRow>[] = [
+  {
+    headerName: "Product",
+    field: "title",
+    flex: 2,
+    cellRenderer: (params: ICellRendererParams<ProductRow>) => {
+      return (
+        <div className="flex items-center gap-3">
+          <div className="max-w-9 max-h-9 overflow-hidden p-1 rounded-md bg-[#ececec]">
+            <img src={params.data?.thumbnail} alt={params.data?.title} />
           </div>
-        );
-      },
+          <span className="font-medium text-sm">{params.data?.title}</span>
+        </div>
+      );
     },
-    { headerName: "Feedback", field: "description", flex: 2 },
-    { headerName: "Available in #Stores", field: "stock", flex: 1 },
-    {
-      headerName: "Sentiment",
-      field: "sentiment",
-      flex: 1,
-      cellRenderer: (params: any) => {
-        const sentiments = ["Positive", "Neutral", "Negative"];
-        const colors = [
-          "text-green-600 bg-[#DCFCE7] py-0.5 px-2 rounded-lg text-xs font-medium",
-          "text-[#CA8A04] bg-[#FEF9C3] py-0.5 px-2 rounded-lg text-xs font-medium",
-          "text-[#EA580C] bg-[#FFEDD5] py-0.5 px-2 rounded-lg text-xs font-medium",
-        ];
-        const randomSentiment = sentiments[params.node.rowIndex % 3];
-        const colorClass = colors[params.node.rowIndex % 3];
-        return (
-          <div className={`${colorClass} flex items-center gap-1`}>
-            <span>
-              {randomSentiment === "Positive" && <ChevronsUp size={12} />}
-              {randomSentiment === "Negative" && <ChevronsDown size={14} />}
-              {randomSentiment === "Neutral" && <CircleMinus size={14} />}
-            </span>
-            <span>{randomSentiment}</span>
-          </div>
-        );
-      },
+  },
+  { headerName: "Feedback", field: "description", flex: 2 },
+  { headerName: "Available in #Stores", field: "stock", flex: 1 },
+  {
+    headerName: "Sentiment",
+    field: "sentiment",
+    flex: 1,
+    cellRenderer: (params: ICellRendererParams<ProductRow>) => {
+      const sentiments = ["Positive", "Neutral", "Negative"];
+      const colors = [
+        "text-green-600 bg-[#DCFCE7] py-0.5 px-2 rounded-lg text-xs font-medium",
+        "text-[#CA8A04] bg-[#FEF9C3] py-0.5 px-2 rounded-lg text-xs font-medium",
+        "text-[#EA580C] bg-[#FFEDD5] py-0.5 px-2 rounded-lg text-xs font-medium",
+      ];
+      const index = params.node.rowIndex ?? 0;
+      const randomSentiment = sentiments[index % 3];
+      const colorClass = colors[index % 3];
+
+      return (
+        <div className={`${colorClass} flex items-center gap-1`}>
+          <span>
+            {randomSentiment === "Positive" && <ChevronsUp size={12} />}
+            {randomSentiment === "Negative" && <ChevronsDown size={14} />}
+            {randomSentiment === "Neutral" && <CircleMinus size={14} />}
+          </span>
+          <span>{randomSentiment}</span>
+        </div>
+      );
     },
-    {
-      headerName: "Issue, If Any",
-      field: "issue",
-      flex: 1,
-      cellRenderer: (params: any) => {
-        const issues = [
-          "Inventory Issue",
-          "Seasonal",
-          "Inventory shortage",
-          "Discontinued SKU",
-        ];
-        const issue = issues[params.node.rowIndex % 4];
-        return (
-          <div className="border border-[#E5E5E5] text-xs font-semibold px-2 py-1 rounded-lg">
-            <span>{issue}</span>
-          </div>
-        );
-      },
+  },
+  {
+    headerName: "Issue, If Any",
+    field: "issue",
+    flex: 1,
+    cellRenderer: (params: ICellRendererParams<ProductRow>) => {
+      const issues = [
+        "Inventory Issue",
+        "Seasonal",
+        "Inventory shortage",
+        "Discontinued SKU",
+      ];
+      const index = params.node.rowIndex ?? 0;
+      const issue = issues[index % 4];
+
+      return (
+        <div className="border border-[#E5E5E5] text-xs font-semibold px-2 py-1 rounded-lg">
+          <span>{issue}</span>
+        </div>
+      );
     },
-  ];
+  },
+];
+
 
   const rowData =
     kpis?.products?.slice(0, 6).map((product) => ({

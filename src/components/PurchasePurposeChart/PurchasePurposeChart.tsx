@@ -8,11 +8,13 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { CalendarFold } from "lucide-react";
 import { useState } from "react";
 import { Bar } from "react-chartjs-2";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,43 +26,44 @@ ChartJS.register(
 );
 
 const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
-  console.log({ kpis });
   const [activeTab, setActiveTab] = useState(
     kpis?.products?.[0]?.category || ""
   );
+
   const data = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "Rings",
         data: [1112, 1000, 1000, 2155, 1000, 1000],
-        backgroundColor: "rgba(250, 204, 21, 0.4)", // yellow with 60% opacity
+        backgroundColor: "rgba(250, 204, 21, 0.4)", // yellow with 40% opacity
       },
       {
         label: "Bracelets",
         data: [1112, 1000, 1000, 2913, 1532, 1000],
-        backgroundColor: "rgba(216, 180, 254, 0.4)", // purple with 60% opacity
+        backgroundColor: "rgba(216, 180, 254, 0.4)", // purple with 40% opacity
       },
       {
         label: "Other",
         data: [3209, 1000, 1000, 3262, 1633, 1000],
-        backgroundColor: "rgba(209, 213, 219, 0.4)", // gray with 60% opacity
+        backgroundColor: "rgba(209, 213, 219, 0.4)", // gray with 40% opacity
       },
     ],
   };
 
-  const options = {
+  // ✅ Strongly typed options
+  const options: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
-        align: "start" as const,
+        position: "top", // strictly typed
+        align: "start", // strictly typed
         labels: {
           boxWidth: 10,
           boxHeight: 10,
           font: {
-            size: 14, // Font size affects overall legend size
-            weight: "bold",
+            size: 14,
+            weight: "bold", // strictly typed
           },
           color: "#737373",
         },
@@ -68,10 +71,10 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
       tooltip: { enabled: true },
       datalabels: {
         color: "#000",
-        anchor: "center",
-        align: "center",
+        anchor: "center", // strictly typed
+        align: "center", // strictly typed
         font: {
-          weight: "normal" as const,
+          weight: "normal", // strictly typed
         },
         formatter: (value: number) => value.toLocaleString(),
       },
@@ -80,18 +83,21 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
       x: {
         stacked: true,
         grid: {
-          borderDash: [2, 2],
+          // @ts-expect-error borderDash is valid in Chart.js runtime
+          borderDash: [2, 2] ,
         },
       },
       y: {
         stacked: true,
-        position: "right" as const,
+        position: "right", // strictly typed
         grid: {
+          // @ts-expect-error borderDash is valid in Chart.js runtime
           borderDash: [2, 2],
         },
       },
     },
   };
+
   return (
     <section className="mb-10">
       <div className="flex gap-4">
@@ -111,6 +117,7 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
               </div>
             </div>
           </div>
+
           <div className="card p-4 grow">
             <Bar
               key="purchase-chart"
@@ -120,8 +127,10 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
             />
           </div>
         </div>
+
         <div className="max-w-[300px]">
           <div className="card p-3">
+            {/* Tabs */}
             <ul className="flex bg-[#F5F5F5] rounded-[10px] p-1">
               {kpis?.products
                 ?.filter(
@@ -130,49 +139,44 @@ const PurchasePurposeChart = ({ kpis }: { kpis: ApiResponse }) => {
                     index
                 )
                 ?.slice(0, 3)
-                ?.map((product, index) => {
-                  return (
-                    <li key={product?.id || index}>
-                      <button
-                        onClick={() => setActiveTab(product?.category)}
-                        className={`px-4 py-1 font-medium text-sm cursor-pointer capitalize ${
-                          activeTab === product?.category
-                            ? "bg-white rounded-[8px]"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {product?.category}
-                      </button>
-                    </li>
-                  );
-                })}
-            </ul>
-            <ul className="mt-4">
-              {kpis?.products?.map((tabData) => {
-                return (
-                  activeTab === tabData?.category && (
-                    <li
-                      key={tabData?.id}
-                      className="flex gap-2 mb-6 last:mb-0  "
+                ?.map((product, index) => (
+                  <li key={product?.id || index}>
+                    <button
+                      onClick={() => setActiveTab(product?.category)}
+                      className={`px-4 py-1 font-medium text-sm cursor-pointer capitalize ${
+                        activeTab === product?.category
+                          ? "bg-white rounded-[8px]"
+                          : "text-foreground"
+                      }`}
                     >
-                      <div className="max-w-[40px] max-h-[40px] overflow-hidden p-1 rounded-md bg-[#ececec]">
-                        <img src={tabData?.thumbnail} alt={tabData?.title} />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-sm">
-                          {tabData?.title}
-                        </span>
-                        <span className="line-clamp-1 text-xs text-[#737373] font-medium">
-                          {tabData?.description}
-                        </span>
-                      </div>
-                    </li>
-                  )
-                );
-              })}
-              {/* {activeTab === "tab1" && <div>Content for Tab 1</div>}
-          {activeTab === "tab2" && <div>Content for Tab 2</div>}
-          {activeTab === "tab3" && <div>Content for Tab 3</div>} */}
+                      {product?.category}
+                    </button>
+                  </li>
+                ))}
+            </ul>
+
+            {/* Product List */}
+            <ul className="mt-4">
+              {kpis?.products?.map((tabData) =>
+                activeTab === tabData?.category ? (
+                  <li
+                    key={tabData?.id}
+                    className="flex gap-2 mb-6 last:mb-0"
+                  >
+                    <div className="max-w-[40px] max-h-[40px] overflow-hidden p-1 rounded-md bg-[#ececec]">
+                      <img src={tabData?.thumbnail} alt={tabData?.title} />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-semibold text-sm">
+                        {tabData?.title}
+                      </span>
+                      <span className="line-clamp-1 text-xs text-[#737373] font-medium">
+                        {tabData?.description}
+                      </span>
+                    </div>
+                  </li>
+                ) : null
+              )}
             </ul>
           </div>
         </div>
